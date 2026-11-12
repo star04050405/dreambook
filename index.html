@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-180.png">
+<link rel="manifest" href="manifest.json">
+<title>梦想成真手帐 · 完整版 | 36位手帐深度用户真实页面分版块解析</title>
+<style>
+  :root{
+    --pink:#f77598; --pinkL:#f9a8bd; --yellow:#f5c542; --yellowL:#f9e04b;
+    --orange:#f0905a; --mint:#5cbfae; --mintL:#8fd8cb;
+    --ink:#4a3b3b; --bg:#fdf6f0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg);line-height:1.85}
+  h1,h2,h3{font-weight:700}
+  section{max-width:1080px;margin:0 auto;padding:70px 24px}
+  .tag{display:inline-block;background:var(--pink);color:#fff;border-radius:999px;padding:4px 18px;font-size:.85rem;margin-bottom:14px}
+  .tag.y{background:var(--yellow);color:#6b5410}.tag.o{background:var(--orange)}.tag.m{background:var(--mint)}
+  h2{font-size:1.9rem;margin-bottom:20px}
+  h2::after{content:"";display:block;width:56px;height:5px;border-radius:4px;background:var(--yellow);margin-top:10px}
+  .lead{font-size:1.02rem;color:#6d5c5c;max-width:760px;margin-bottom:10px}
+
+  /* 顶部导航 */
+  nav{position:sticky;top:0;z-index:99;background:#fffd;backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,.08);padding:10px 16px;text-align:center;overflow-x:auto;white-space:nowrap}
+  nav a{display:inline-block;color:#6d5c5c;text-decoration:none;font-size:.88rem;padding:4px 14px;border-radius:999px;margin:0 2px}
+  nav a:hover{background:var(--pink);color:#fff}
+
+  /* 封面 */
+  .hero{
+    min-height:86vh;display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(circle 26px at 10% 20%, rgba(248,183,207,.6) 98%, transparent),
+      radial-gradient(circle 26px at 30% 70%, rgba(191,227,239,.7) 98%, transparent),
+      radial-gradient(circle 26px at 55% 30%, rgba(249,233,78,.5) 98%, transparent),
+      radial-gradient(circle 26px at 80% 60%, rgba(248,183,207,.5) 98%, transparent),
+      radial-gradient(circle 26px at 15% 85%, rgba(249,233,78,.4) 98%, transparent),
+      radial-gradient(circle 26px at 90% 15%, rgba(191,227,239,.6) 98%, transparent),
+      linear-gradient(135deg,#ffe98a 0%,#cdeaf5 100%);
+    text-align:center;padding:60px 20px;
+  }
+  .hero .card{background:#fff8;backdrop-filter:blur(4px);padding:46px 56px;border-radius:24px;max-width:760px;box-shadow:0 20px 60px rgba(0,0,0,.12)}
+  .hero h1{font-size:clamp(2.6rem,8vw,5.6rem);letter-spacing:.12em;line-height:1.15;color:transparent;-webkit-text-stroke:2.5px #f7c948;text-shadow:6px 6px 0 rgba(248,183,207,.45);writing-mode:vertical-rl;margin:0 auto 22px;height:4.2em}
+  @media(max-width:640px){.hero h1{writing-mode:horizontal-tb;height:auto}}
+  .hero .sub{color:#e0618f;font-weight:700;margin-bottom:8px}
+  .hero .en{color:#7ca8c0;font-size:.9rem;letter-spacing:.06em}
+  .hero .stat{display:inline-block;margin-top:22px;background:#fff;border-radius:999px;padding:10px 30px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+  .hero .stat b{font-size:2.2rem;color:#e0618f}
+  .hero .stat small{display:block;font-size:.78rem;color:#999}
+
+  /* 章节横幅 */
+  .banner{border-radius:20px;color:#fff;padding:34px 40px;margin-bottom:34px}
+  .banner .en{font-size:.78rem;letter-spacing:.15em;opacity:.9}
+  .banner h2{color:#fff;font-size:1.8rem;margin:6px 0 4px}
+  .banner h2::after{background:#fff;width:44px}
+  .banner p{font-size:.92rem;opacity:.95;max-width:700px}
+  .b1{background:linear-gradient(135deg,#f77598,#f9a8bd)}
+  .b2{background:linear-gradient(135deg,#f5c542,#f9e04b);color:#6b5410}
+  .b3{background:linear-gradient(135deg,#f0905a,#f7b26f)}
+  .b4{background:linear-gradient(135deg,#5cbfae,#8fd8cb);color:#2b5c54}
+  .b2 h2::after,.b4 h2::after{background:#6b5410}
+
+  /* 案例 */
+  .cases{display:grid;gap:20px}
+  .case{display:flex;gap:20px;background:#fff;border-radius:16px;padding:24px 28px;box-shadow:0 4px 16px rgba(0,0,0,.06);border-left:6px solid var(--pink)}
+  .case:nth-child(4n+2){border-left-color:var(--yellow)}
+  .case:nth-child(4n+3){border-left-color:var(--orange)}
+  .case:nth-child(4n){border-left-color:var(--mint)}
+  .case .num{font-size:1.8rem;font-weight:800;color:#dcc4c4;min-width:56px;align-self:center}
+  .case h3{font-size:1.08rem;margin-bottom:4px}
+  .case .who{font-size:.8rem;color:#b59a9a;margin-bottom:8px}
+  .case .who b{color:#e0618f}
+  .case p{font-size:.92rem;color:#6d5c5c}
+  .case .goods{margin-top:10px;font-size:.82rem;color:#9b7f7f;background:#faf1f1;border-radius:10px;padding:8px 14px;display:inline-block}
+  .case .goods b{color:#e0618f}
+
+  /* 方法/技巧卡 */
+  .method{background:#fff;border-radius:18px;padding:32px 36px;margin-top:26px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+  .method>h3{font-size:1.15rem;margin-bottom:14px;color:#5b4646}
+  .method ol,.method ul{padding-left:22px}
+  .method li{margin:8px 0;font-size:.94rem;color:#5f4d4d}
+  .method .hl{background:#fff3c2;padding:0 4px;border-radius:4px}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:20px}
+  .step{background:#fff;border-radius:16px;padding:22px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+  .step .n{width:42px;height:42px;border-radius:50%;background:var(--yellow);color:#6b5410;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:1.15rem}
+  .step b{display:block;margin-bottom:4px;font-size:.95rem}
+  .step small{color:#9b8383;font-size:.82rem}
+  .tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:20px}
+  .tip{background:#fff;border-radius:14px;padding:20px 22px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+  .tip b{color:#5b4646}
+  .tip p{font-size:.88rem;color:#6d5c5c;margin-top:4px}
+  .tip .tn{display:inline-block;background:var(--mint);color:#fff;border-radius:50%;width:26px;height:26px;text-align:center;line-height:26px;font-size:.85rem;margin-right:8px}
+
+  /* 文具 */
+  .brands{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:36px}
+  .brand{background:#fff;border-radius:16px;padding:24px 28px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+  .brand .bname{display:inline-block;background:var(--orange);color:#fff;border-radius:8px;padding:2px 14px;font-weight:700;margin-bottom:10px}
+  .brand .rec{font-size:.8rem;color:#b59a9a;margin-bottom:8px}
+  .brand b{color:#5b4646}
+  .brand p{font-size:.9rem;color:#6d5c5c}
+  .brand .price{font-size:.8rem;color:#c0a3a3;margin-top:6px}
+
+  /* 数据 */
+  .data{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:36px}
+  @media(max-width:760px){.data{grid-template-columns:1fr}}
+  .poll{background:#fff;border-radius:18px;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+  .poll h3{margin-bottom:14px;font-size:1.02rem}
+  .bar{margin:11px 0}
+  .bar span{display:flex;justify-content:space-between;font-size:.84rem;margin-bottom:4px}
+  .bar .track{height:12px;background:#f2e6e6;border-radius:8px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#f77598,#f9a8bd)}
+  .poll.p2 .fill{background:linear-gradient(90deg,#f5c542,#f7dd6b)}
+
+  /* 目录 */
+  .toc{background:#fff;border-radius:18px;padding:34px 40px;box-shadow:0 4px 16px rgba(0,0,0,.06);columns:2;column-gap:44px}
+  @media(max-width:760px){.toc{columns:1}}
+  .toc h3{break-after:avoid;font-size:1rem;color:#e0618f;margin:14px 0 6px}
+  .toc .sec{font-size:.9rem;color:#5b4646;margin:5px 0}
+  .toc .pg{color:#c9abab;font-size:.8rem}
+
+  /* 引用 */
+  .quote{background:#fff;border-radius:20px;padding:42px 46px;margin-top:34px;box-shadow:0 4px 16px rgba(0,0,0,.06);position:relative}
+  .quote::before{content:"“";position:absolute;top:-10px;left:22px;font-size:5.5rem;color:var(--pink);font-family:serif}
+  .quote p{font-size:.98rem;color:#5b4646;margin-bottom:12px}
+  .quote .who{margin-top:10px;text-align:right;font-size:.85rem;color:#b59a9a}
+
+  /* QA */
+  .qa{background:#fff;border-radius:14px;padding:18px 24px;margin-top:14px;box-shadow:0 3px 10px rgba(0,0,0,.05)}
+  .qa .q{color:#e0618f;font-weight:700;font-size:.95rem}
+  .qa .a{font-size:.9rem;color:#6d5c5c;margin-top:4px}
+
+  footer{background:var(--ink);color:#cbb8b8;text-align:center;padding:40px 20px;font-size:.85rem;margin-top:40px}
+  footer b{color:#fff}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#top">封面</a><a href="#about">关于本书</a><a href="#toc">完整目录</a>
+  <a href="#ch1">① 工作能力</a><a href="#ch2">② 梦想实现</a><a href="#ch3">③ 每日记录</a><a href="#ch4">④ 子弹笔记</a>
+  <a href="#data">读者调研</a><a href="#preface">推荐序</a>
+</nav>
+
+<!-- ═══════════ 封面 ═══════════ -->
+<header class="hero" id="top">
+  <div class="card">
+    <p class="sub">《日经女性》杂志 编著 · 陈婧 译</p>
+    <h1>梦想<br>成真<br>手帐</h1>
+    <p class="en">書くだけで夢がかなう 手帳＆ノート術</p>
+    <p class="sub" style="margin-top:16px">理顺手帐的逻辑，看似不可能实现的梦想，也能按部就班成为现实</p>
+    <div class="stat"><b>36</b><small>位手帐深度用户<br>真实页面分版块解析</small></div>
+  </div>
+</header>
+
+<!-- ═══════════ 关于本书 ═══════════ -->
+<section id="about">
+  <span class="tag">关于本书</span>
+  <h2>这不是一本教排版的书，而是梳理手帐使用的思维框架</h2>
+  <p class="lead">《日经女性》杂志选择了36位不同职业和人生阶段的女性手帐深度使用者，以其各自一页手帐为实例，分版块逐一解析手帐的逻辑。每一页案例都呈现「一页手帐实拍图 + 思路解析 + 同款文具推荐」，不仅让你看到「写了什么」，更理解「为什么这样写」。</p>
+  <div class="method" style="margin-top:24px">
+    <h3>本书回答的核心问题</h3>
+    <ul>
+      <li>我用手帐做什么？想实现什么目标？</li>
+      <li>我该选择什么样的手帐本和手帐工具？</li>
+      <li>我是怎么写的？为什么要这么写？</li>
+      <li>这样写手帐，我的工作和生活发生了哪些变化？</li>
+      <li>我自己取得了哪些进步？有了哪些提升？</li>
+      <li>来自诸多文具品牌的内部员工，他们如何写手帐？他们心中的 top 级手帐文具有哪些？</li>
+    </ul>
+  </div>
+  <div class="tips" style="margin-top:20px">
+    <div class="tip"><b>出版方</b><p>北京日报出版社 · 2020年12月第1版</p></div>
+    <div class="tip"><b>原作</b><p>日经Business Publications，2019年<br>插画版权 © Kei Okuda</p></div>
+    <div class="tip"><b>ISBN / 定价</b><p>978-7-5477-3838-2 · 58.00元</p></div>
+    <div class="tip"><b>规格</b><p>880×1230mm 1/32开 · 印张4.5 · 150千字</p></div>
+  </div>
+</section>
+
+<!-- ═══════════ 完整目录 ═══════════ -->
+<section id="toc">
+  <span class="tag">完整目录</span>
+  <h2>全书结构总览（含原书页码）</h2>
+  <div class="toc">
+    <h3>Chapter 1 工作能力提升篇</h3>
+    <p class="sec">通过手帐提升工作能力的秘诀 · 2</p>
+    <p class="sec">Case1 每周写一次「自我采访手帐」 · 2</p>
+    <p class="sec">Case2 将一个月分成前半月与后半月 · 6</p>
+    <p class="sec">Case3 将工作与学习计划可视化 · 10</p>
+    <p class="sec">Case4 用不同颜色细分工作与生活 · 12</p>
+    <p class="sec">Case5 团队成员信息做成一览表 · 14</p>
+    <p class="sec">Case6 用甘特图使流程可视化 · 16</p>
+    <p class="sec">职场妈妈的手帐秘密 · 18</p>
+    <p class="sec">Case1 留出时间做想做的事 · 18</p>
+    <p class="sec">Case2 自己与女儿的计划可视化 · 20</p>
+    <p class="sec">按工作烦恼分类·四种基本的日程手帐 · 22</p>
+    <p class="sec">月计划手帐 · 23 / 周计划手帐 · 24</p>
+    <p class="sec">垂直时间轴手帐 · 26 / 甘特图手帐 · 28</p>
+    <p class="sec">按职业分类·通用手帐记录法则 · 30</p>
+    <p class="sec">Case1 插画师的视觉笔记 · 30</p>
+    <p class="sec">Case2 全能秘书的业务笔记 · 34</p>
+    <p class="sec">职业女性正在借助手帐获得成长 · 36</p>
+    <h3>Chapter 2 梦想实现篇</h3>
+    <p class="sec">实现梦想与目标的手帐记录法 · 38</p>
+    <p class="sec">Case1 坚持写学习手帐，提前一年通过资格考试 · 38</p>
+    <p class="sec">Case2 每日用减肥手帐并在社交平台公开 · 42</p>
+    <p class="sec">Case3 借助良好习惯，体重丝毫无反弹 · 44</p>
+    <p class="sec">Case4 用收支手帐将花出去的钱可视化 · 46</p>
+    <p class="sec">Case5 用超简单的收支手帐实践家庭开支计划 · 48</p>
+    <p class="sec">开启自己的「手帐时间」吧 · 50</p>
+    <p class="sec">青木千草：将时间与行动挂钩 · 50</p>
+    <p class="sec">相原彩香：调整疲惫内心的时间 · 53</p>
+    <p class="sec">我们用手帐做到了！ · 54</p>
+    <p class="sec">Case1 产生无穷灵感的心动瞬间储存手帐 · 54</p>
+    <p class="sec">Case2 落实目标与梦想的行动手帐 · 58</p>
+    <p class="sec">Case3 同步管理各项工作的一页可视化手帐 · 60</p>
+    <p class="sec">Case4 不做过滤取舍的完整记录手帐 · 62</p>
+    <p class="sec">试试永谷式「每日成就手帐」吧 · 64</p>
+    <h3>Chapter 3 每日记录篇</h3>
+    <p class="sec">通过手帐，增加了幸福感，实现了自我成长 · 72</p>
+    <p class="sec">Case1 养成用手帐回顾每一天的习惯 · 72</p>
+    <p class="sec">Case2 借助手帐与自己预约时间 · 75</p>
+    <p class="sec">汇总所有金钱事务的收支笔记大公开 · 76</p>
+    <p class="sec">Case1 原创记账模板，让家庭支出可视化 · 76</p>
+    <p class="sec">Case2 用「预设菜单」管理伙食费 · 80</p>
+    <p class="sec">明确将来的目标与必需的金钱 · 83</p>
+    <p class="sec">拜读学习达人的学习手帐 · 84</p>
+    <p class="sec">Case1 借助韩语学习手帐通过鉴定考试 · 84</p>
+    <p class="sec">Case2 日本史学习笔记 · 89</p>
+    <p class="sec">「写手帐坚持不下去」的问题，这样解决 · 92</p>
+    <p class="sec">通过适合自己的使用方法 · 92</p>
+    <p class="sec">尽管如此还是坚持不下去怎么办 · 95</p>
+    <p class="sec">高人气文具公司职员私心推荐的手帐文具 · 96</p>
+    <p class="sec">Brand1 国誉 · 96 / Brand2 Touch&Flow · 98</p>
+    <p class="sec">Brand3 普乐士 · 100 / Brand4 喜利 · 102</p>
+    <p class="sec">Brand5 Mark's · 104 / Brand6 国誉 · 106</p>
+    <h3>Chapter 4 BUJO 子弹笔记篇</h3>
+    <p class="sec">借助子弹笔记，让每一天都过得更顺利 · 110</p>
+    <p class="sec">消除不安感，让子弹笔记成为力量的源泉 · 111</p>
+    <p class="sec">通过清单，打造具有自我风格的手帐 · 115</p>
+    <p class="sec">职场女性的进阶版子弹笔记 · 116</p>
+    <p class="sec">Case1 写下每天完成的事，充满成就感 · 116</p>
+    <p class="sec">Case2 手绘清单时间，正是面对自我的时间 · 121</p>
+  </div>
+</section>
+
+<!-- ═══════════ CHAPTER 1 ═══════════ -->
+<section id="ch1">
+  <div class="banner b1">
+    <span class="en">CHAPTER 1 · FOR WORKS</span>
+    <h2>工作能力提升篇</h2>
+    <p>你的手帐，是不是你不经意中挑选的，里面也仅仅填写了你的计划呢？如果能认真挑选出适合自己的手帐本，并有效地利用起来，你的工作效率就能得到提高，私人生活也会变得充实。</p>
+  </div>
+  <span class="tag">六位职场女性受访者</span>
+  <h2>通过手帐提升工作能力的秘诀</h2>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>每周写一次「自我采访手帐」，对工作进行回顾和总结</h3>
+      <p class="who">想达成工作目标！——<b>来自营销人士的回答</b> ｜ 伊吕波出版社 宣传 · 园田穗积 女士（29岁）</p>
+      <p>月计划页留出「与自己对话的空间」：工作想法、创意、自我反省等内容都写在每周页的备忘栏里。下班后会在本周页面下方的备忘栏里写「宣传工作究竟要做什么」「自己的不足之处在哪里」，不断叩问自己。开拓「乐趣专栏」，写下本周实现梦想的事、买到了心仪的东西等来为自己打气。</p>
+      <p class="goods">结果：一年内公司产品被媒体宣传了一百多次，得到社长认可，名片上加上了「宣传负责人」的头衔。</p>
+      <p class="goods">我爱用这本手帐：<b>Sunny Schedule Book 日程本·周计划本</b>（B6 · 2900日元 · 伊吕波出版社）</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>将一个月分成前半月与后半月，将一周要做的事分派到每一天</h3>
+      <p class="who">被各种工作追赶着，想做的事情却做不了……——<b>来自创业者的回答</b> ｜ 碓 董事长 · 高家苑美 女士（41岁）</p>
+      <p>前半月填写商务谈判等与销售额有关的事，后半月填写公司内部的事情和可能调整的工作。每月还设置两个「缓冲日」夺回延误时间，每周预留「外出日」和「整理思路日」。碰头会和外出尽量安排在同一天；客户名字统一写成「XX先生/女士」的形式；和部下共享谷歌日历日程，省去逐一确认时间的功夫。</p>
+      <p class="goods">结果：「预先战略性地分配好时间，我就不会手忙脚乱了。」工作效率提高。</p>
+      <p class="goods">我爱用这本手帐：<b>高桥月计划本 No.358 Charme</b>（P6 · 1650日元 · 高桥书店）</p>
+    </div></div>
+    <div class="case"><div class="num">3</div><div>
+      <h3>将工作与学习计划进行可视化处理，维持自我肯定感</h3>
+      <p class="who">没有信心兼顾工作与学习——<b>来自人士的回答</b> ｜ En-Japan 人事部…负责人 · 南条夏 女士（30岁）</p>
+      <p>月初就写下本月的工作主题与学习目标；重要的工作用红笔来写让它更醒目；贴上喜欢的白熊便利贴提升动力；重要计划旁贴上「特别努力的日子则用圆点贴纸强调」；跨周或跨月的 To Do 写在便利贴上方便挪动。「每当学习不顺利、心情不舒畅的时候，看看手帐，发现这周自己辛辛苦苦地组织了培训，就能维持自我肯定感。」</p>
+      <p class="goods">我爱用这本手帐：<b>国誉 自我手帐（随着版调节）</b>（A5 slim · 3800日元 · 国誉）</p>
+    </div></div>
+    <div class="case"><div class="num">4</div><div>
+      <h3>用不同颜色细分工作与生活，实现身心平衡</h3>
+      <p class="who">想让工作和生活都充实起来——<b>来自企划人员的回答</b> ｜ 不动产管理 营业企划 · 井原千惠 女士（30岁）</p>
+      <p>用不同颜色分别记录工作与生活事项：黑色—工作计划、粉色—私人生活、藏青色—学习、绿色—外出、橙色—旅行、红色—与同事的聚会、橙色—饮食。「如果总是在工作，晚餐就都是黑色，这不太像迈向工作、失去平衡了吗？通过区分颜色，我就能客观地判断出自己的状态。」早晨将前一天没完成的 To Do 从前页挪下来，作为自己努力的证明。</p>
+      <p class="goods">我爱用这本手帐：<b>Bindex 月计划·周计划活页替芯-1</b>（B6 · 1420日元 · 日本能率协会）</p>
+    </div></div>
+    <div class="case"><div class="num">5</div><div>
+      <h3>将团队成员的信息做成一览表，作为分配任务时的参考</h3>
+      <p class="who">想要提升团队凝聚力——<b>来自管理人员的回答</b> ｜ Voltage 高级美术指导·设计联合总部 经理 · 森井理咏 女士（35岁）</p>
+      <p>在月计划页记下每个团队成员的生日并配上插画；写下面谈时注意到的事情为布置工作提供参考；记下布置给团队成员的任务及完成期限以防指示疏漏；贴上公司都开发的角色贴纸提升工作动力；为去产生兴趣带来团队去神社祈福，用得像护身符的书签代替书签带。</p>
+      <p class="goods">结果：她晋升了，下属从5人增加到了10人。「这本手帐变得更加不可或缺。」</p>
+      <p class="goods">我爱用这本手帐：<b>Michael Roger 笔记本（配合月计划贴纸）</b>＋自定月计划贴纸（A5 · 880日元 · Greeting Life）</p>
+    </div></div>
+    <div class="case"><div class="num">6</div><div>
+      <h3>用甘特图使流程可视化之后，加班减少了</h3>
+      <p class="who">被任务追赶着，加班越来越多——<b>来自管理人员的回答</b> ｜ 人才广告公司 筹划与运营管理 · 林花惠 女士（32岁）</p>
+      <p>将「考虑成的时间」用虚线表示纳入日程表；预先将每天的工作计划填入方格里；图标规则写在便利贴上（任务开始用◎标记，截止日用◎标记）；休息计划预先填进方格里；已完成的任务将圆圈涂成红色；对干截止日期推迟等重要的变更，将变更的记录也保留下来；将以后可以借鉴的经验教训写在空白栏里。</p>
+      <p class="goods">结果：「多亏了手帐，加班时间减少了，我可以把更多的时间花在兴趣与学习等方面。」</p>
+      <p class="goods">我爱用这本手帐：<b>甘特图日程本</b>（A5 · 950日元 · Art Print Japan）</p>
+    </div></div>
+  </div>
+
+  <span class="tag">职场妈妈的手帐秘密</span>
+  <h2>尽管工作和生活来回切换，也能很充实</h2>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>尽管有两个上幼儿园的孩子，也能留出时间做想做的事</h3>
+      <p class="who">损保日本兴亚同葵生命保险 事业部企部直营退货室 主任 · 加藤千夏 女士（35岁，两个男孩：2岁和5岁）</p>
+      <p>使用「T Family」手帐记录与丈夫、儿子等多人有关的计划。给努力的自己一份奖励清单提升动力；想看的电影和书记下来以免忘记；不可忘记的计划用黄色马克笔标记使之醒目；一天的时间轴写在便利贴上；不上班的日子用粉色框出来；记录超市积分翻倍当天去购物。挤电车通勤的25分钟是宝贵的手帐时间——「从始发站上车，一路坐著。早晨写和丈夫共同的计划，记在早间新闻里看到的电影信息。一边写手帐，一边在脑中整理。」</p>
+      <p class="goods">结果：不仅是时间管理，奖励清单、与孩子的回忆都记在手帐的角落里，「闲下来重读手帐的时候，心里就会感到温暖。」</p>
+      <p class="goods">我爱用这本手帐：<b>高桥手帐 No.441 T「Family 1」</b>（B6 · 1250日元 · 高桥书店）</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>熟练运用周计划页，将自己与女儿的计划可视化</h3>
+      <p class="who">Orix Credit 营业一部推进团队 经理助理 · 香川有纪 女士（47岁，有一个9岁的女儿）</p>
+      <p>使用 Action Planner 手帐本已有10年以上。周计划页每天的时间轴被分割了30分钟一格。将包含出行与准备时间在内的必需时间用四边形框出，从「面」的角度看计划；已经决定的计划框出来，从「面」的角度把握。自己和女儿的计划用双栏形式记录：自己的计划用海军蓝记在左侧，女儿的计划用粉色或者淡蓝色记在右侧。「星期天我们一起写手帐，这成为亲子之间的纽带！」女儿也用手帐管理学习计划。</p>
+      <p class="goods">结果：「放下心来，我就能集中注意力在工作上了。」工作效率提升。</p>
+      <p class="goods">我爱用这本手帐：<b>Action Planner</b>（A5 · 3700日元 · ewoman）</p>
+    </div></div>
+  </div>
+
+  <span class="tag">按工作烦恼分类</span>
+  <h2>四种基本的日程手帐</h2>
+  <div class="method">
+    <h3>通用技巧 6 条</h3>
+    <ul>
+      <li><span class="hl">①</span> 用荧光笔将假日框出来，使工作日可视化</li>
+      <li><span class="hl">②</span> 在实际截止日期之前确定「我的截止日期」（提前2~3天定为「我的截止日期」）</li>
+      <li><span class="hl">③</span> 将「努力日」空出来，不再安排其他计划</li>
+      <li><span class="hl">④</span> 晚上的计划用彩色笔来写，更加醒目</li>
+      <li><span class="hl">⑤</span> 上司、同事的计划也填写在手帐里</li>
+      <li><span class="hl">⑥</span> 在截止日期外，追加截止时间</li>
+    </ul>
+  </div>
+  <div class="tips">
+    <div class="tip"><span class="tn">①</span><b>月计划手帐</b><p>每月两页，一个月的计划可以一目了然，是人气最旺的手帐。假日计划用便利贴盖起来方便隐藏。<br><i>例：KUM 日本（A6 · 2500日元 · 藤井Raymay）</i></p></div>
+    <div class="tip"><span class="tn">②</span><b>周计划手帐</b><p>左侧是一周的任务栏，印有日期，右侧为笔记页。预先制订计划与 To Do 清单；前一天必须完成的准备工作用前头关联起来；笔记页的右半边用来记录会议派生出的 To Do；碰头之前先写好议题。<br><i>例：高桥手帐 No.352 Charme 2（B6 · 1650日元）</i></p></div>
+    <div class="tip"><span class="tn">③</span><b>垂直时间轴手帐</b><p>一个对开页为一周，每一天都带垂直时间轴。在固定的下班时间处画线明确下班目标；工作之外想做的事在本子里列出计划；预先将工作之外要做的事列个清单；写下一天的状况；可能延时的计划用虚线来留出空格。<br><i>例：Nolty Carrel B6 时间手帐（B6 · 1700日元 · 日本能率协会）</i></p></div>
+    <div class="tip"><span class="tn">④</span><b>甘特图手帐</b><p>一个对开页为一个月，日期横向排列，纵向填写多个任务，可一边填写每项任务的进展情况，一边比较各项目的进度快慢。家人计划各自分栏填写；在工作计划上方填写私人计划；需要准时回家的日子写明「不可加班」；制作自己的计划栏积极填写令自己开心的计划。<br><i>例：Midori 双对手帐 Double Schedule Project（A5 · 1500日元）</i></p></div>
+  </div>
+
+  <span class="tag">按职业分类</span>
+  <h2>通用手帐记录法则</h2>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>插画师的视觉笔记——借助视觉笔记来落实学习计划</h3>
+      <p class="who">插画师 · 田边绘里 女士（30岁）@elle.visualdays</p>
+      <p>视觉笔记发源于美国，是一种借助图案和箭头，用画面的方式进行记录的笔记术。一边看电视节目《大地的青睐》一边汇总；费工夫的画留到目标结束之后再画；将节目中的主题誊写下来。</p>
+      <p class="goods">视觉笔记五个记录要点：<b>① 文字要轻重有别</b>（标题字写大、笔画粗、颜色深）｜<b>② 掌握基本的版面设计法则</b>（基本式：左上起点右下终点；放射状式：中央向外扩散；蛇形式：按时间顺序记录）｜<b>③ 颜色最多用三种</b>｜<b>④ 插图宜简单传神</b>（小符号、小图梁）｜<b>⑤ 视觉笔记，乐在其中！</b></p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>全能秘书的业务笔记——用便利贴及时记录，工作零失误</h3>
+      <p class="who">Voltage株式会社 社长秘书 · 田中翠 女士（28岁）</p>
+      <p>每项业务的相关内容单独整理、汇总在一页上；便利贴、名片和笔记放在一起随身携带（本子后面的透明收纳袋里装着名片与便利贴）；接到指示立刻记在便利贴上，之后再整理、汇总到笔记本上并附上索引；会议的流程顺序画成图一目了然；出过一次错的事情用彩色笔来写以防再次犯错；用和纸胶带与贴纸装饰页面。</p>
+      <p class="goods">结果：「做到了任务零遗漏，也感受到了来自他人的信赖。」</p>
+      <p class="goods">正在使用的是：<b>Defonics Rollbahn 线圈本</b>（A5 · 淡粉色）</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- ═══════════ CHAPTER 2 ═══════════ -->
+<section id="ch2">
+  <div class="banner b2">
+    <span class="en">CHAPTER 2 · FOR DREAMS</span>
+    <h2>梦想实现篇</h2>
+    <p>想要存钱，将来做点想做的事；想要取得职业资格，然后换份工作；想要变得更苗条……如果能好好利用手帐，这些梦想都可以实现！</p>
+  </div>
+  <span class="tag">考试合格 · 减肥成功 · 存到钱</span>
+  <h2>实现梦想与目标的手帐记录法</h2>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>坚持写学习手帐，提前一年通过了职业资格考试</h3>
+      <p class="who">职业资格考试学习手帐 ｜ 求职中 · 蜜酱 女士（27岁，靠自学通过了公务员考试）</p>
+      <p>年计划页安排好什么科目学到什么时候为止；每天的学习内容记录在周计划页的上半部分，下半部分用来汇总和整理要记住的东西以便复习；本月一定要做到的事月初写下月底确认；学习的日子用荧光笔框起来；月写下对这个月的回顾；无法学习的日子用贴纸巧妙地填补空缺；将每科目的进展情况做成一览表便于管理；开辟「我的参考书」版块汇总经常出错的重点；要记住的术语写在便利贴上贴在手帐里。</p>
+      <p class="goods">结果：本来计划花两年时间通过考试，功夫不负有心人，提前一年就考试合格了。目标：成为一名全职的市政府职员。</p>
+      <p class="goods">我爱用这本手帐：<b>Mark's EDIT Souple 周计划手帐</b>（类A5 · 2600日元 · Mark's）</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>每日用减肥手帐记录体重和饮食，并在社交平台上公开全部内容</h3>
+      <p class="who">减肥手帐 ｜ 印刷 · 艾米 女士（27岁）@ami1012gogo</p>
+      <p>用自创的图表记录每天的体重和体脂率（BMI等记录在页内左上角）；饮食、排便、运动情况用○△×来表示后用数字写明处于星期几；每一餐吃下的食物也检查一下热量；在Ins上公开手帐的全部内容提升干劲（约7300粉丝）；月计划页里也写上每天体重做成一览表；体重变化用曲线图表示使增减可视化。</p>
+      <p class="goods">结果：持续三年，体重从59kg减到54kg，成功减掉5kg。「知道了『一去喝酒体重肯定增加』这一点后，下酒小菜我就会选择更健康的。」</p>
+      <p class="goods">我爱用这本手帐：<b>Hobonichi手帐 original avec</b>（A6 · 2200日元·税 · Hobonichi）</p>
+    </div></div>
+    <div class="case"><div class="num">3</div><div>
+      <h3>借助良好习惯与合理记录，减肥手帐，体重丝毫无反弹</h3>
+      <p class="who">减肥顾问 · 柚木卓代 女士（35岁，减掉20kg后保持体重不反弹）@takayo_yuki</p>
+      <p>「下ート DAY」就是欺骗日，这一天要充分摄入碳水化合物；用甘特图管理每天的减肥任务，看到代表任务完成的○接踵而至时减肥动力更足；上半部分的月计划页写下的甘特图专门记录减肥情况，将一天里摄入的水分量、排便的次数、运动情况作为一个个记录下来，将体重图表化；没做到的日子用画「×」；每月选一个自己在意的身体部位制订有针对性的锻炼计划。</p>
+      <p class="goods">结果：产后的她有效利用手帐成功减重20kg。「注意到体重增加的时候，我会看看是否和上半部分的工作忙碌程度有关系。」现在她成了减肥顾问，向客户提供减肥手帐使用建议。</p>
+      <p class="goods">我爱用这本手帐：<b>Yumekirock Separate Diary 两段式手帐</b>（A5 · 4445日元 · 素朴手帐）</p>
+    </div></div>
+    <div class="case"><div class="num">4</div><div>
+      <h3>杜绝糊里糊涂的开支，用收支手帐将花出去的钱可视化</h3>
+      <p class="who">收支手帐 ｜ 美容师（与丈夫和三个孩子一起生活）· 里美 女士（40岁）@satomi_tu</p>
+      <p>一边看视频一边将买的东两详细地写下来，再根据手帐上的日期统计支出款项；每家商店的采购合计金额分开记录；记下当天发生的事情；一张收据写一行，只写下在哪花了多少钱；被银行扣掉的金额就用笔记记录；丈夫公司的经费用蓝笔记录；一个月的支出记在一个对开页上做成一览表；使每天花掉的金额与当月的累计金额可视化。</p>
+      <p class="goods">结果：长女补习班费用让她吃惊后开始记账——「自从记账后，花销变得张弛有度，浪费锐减，存款一年增加了100万日元以上。」</p>
+      <p class="goods">我爱用这本手帐：<b>Hobonichi 手帐 cousin Avec</b>（A5 · 4190日元·含税 · Hobonichi）</p>
+    </div></div>
+    <div class="case"><div class="num">5</div><div>
+      <h3>用超简单的收支手帐，实践家庭开支计划</h3>
+      <p class="who">收支手帐 ｜ 公司职员（与丈夫和两个孩子一起生活）· 汉娜 女士（30岁）@hananokakeibo</p>
+      <p>只选择4个开支项目记录每天的现金支出：伙食费、在外用餐费、日用品费、杂费；定下预算「一天的平均支出为2000日元」以周为单位进行控制；用一个对开页记录从发薪日开始到下一个发薪日前一天为止的一个月的财务状况；在「NO MONEY DAY（无现金支出日）」贴贴纸；写上当月反省作为下个月的经验参考；现金支出也写出来没有一笔钱用途不明；在Ins上公开收支手帐告别「三天打鱼两天晒网」。</p>
+      <p class="goods">结果：储蓄额每月增加了2万日元！粉丝已经超过了1000人。</p>
+      <p class="goods">我爱用这本手帐：<b>无印良品 再生纸笔记本·月计划型</b>（A5 · 100日元 · 无印良品池袋西武店）</p>
+    </div></div>
+  </div>
+
+  <span class="tag">每周一次，只要动笔记录内心就会受益</span>
+  <h2>开启自己的「手帐时间」吧</h2>
+  <p class="lead">「手帐时间」指的是除了完成手帐里的每日计划和 To Do 事项外，还要为了做自己想做的事和令人兴奋的事情而留出空间，通过手帐和未来的自己预约，就能充实地度过每一天。</p>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>将时间与行动挂钩，想做的事都能实现</h3>
+      <p class="who">手帐生活设计师 · 青木千草 女士（一边经营着公司 Citta，一边在御前崎教瑜伽。设计·制造自己的手帐品牌「Citta Diary」，并著有《Citta式·让人生光芒四射的手帐时间》等书）</p>
+      <p>「手帐时间不光是在手帐里写下的计划的时间，还包括找到能够用在自己身上的时间，将想要做的事情写进手帐里的时间。如果2小时有点勉强，只要有30分钟，就能整理想法，人会变得轻松舒畅。」</p>
+      <p class="goods">青木女士的手帐时间规则：<b>①</b> 星期三的下午花2小时写手帐 ｜<b>②</b> 在容易集中注意力的咖啡店里写 ｜<b>③</b> 文字粗糙也没关系，计划有变更，也不要重写，画个「×」就可以了 ｜<b>④</b> 在本次手帐时间中决定下一次手帐时间在什么时候</p>
+      <p class="goods">手帐时间里写些什么？<b>①</b> 写下自己的「兴奋清单」（那些让自己心动的事，重点是要决定好去做的日子）｜<b>②</b> 写下不能改变的计划④与起床和睡觉的预约（在睡觉时间左侧画一条竖线）｜<b>③</b> 写下本周与下周想做的事（在兴奋清单里挑出⑤并决定好去做的日子）｜<b>④</b> 记下每天的空白时间里想做的事</p>
+      <p class="goods">我爱用这本手帐：<b>Citta Diary</b>（A5 · 3500日元 · Citta）</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>手帐时间，是调整自己疲惫内心的时间</h3>
+      <p class="who">IT企业营业部 · 相原彩香 女士（27岁）</p>
+      <p>为了学习商务技能去听相关讲座；每到周末或压力大的时候就去咖啡馆度过自己的手帐时间，借以重新审视自我。「我的规则是不对自己说谎，要将真实的心情写在手帐的每日一页部分。当看到自己不满、不安等情绪的原因时，心情反而会变得舒畅。」</p>
+      <p class="goods">相原女士的手帐时间规则：<b>①</b> 在周末或旅行中感到兴奋的日子里写 ｜<b>②</b> 在咖啡馆或搭乘电车外出的途中写 ｜<b>③</b> 不要在意错字、漏字，自由地书写 ｜<b>④</b> 不对自己撒谎，书写真实的心情</p>
+      <p class="goods">她的另一招：将向往的女性形象照片贴在手帐上并偶尔回顾（「内心平和而美丽的生活」等），每年年初写下当月的目标和主题（如「为了能在商务讲座中扎扎实实地学习，要对工作方法进行改善」）。</p>
+      <p class="goods">旅行途中也要保证手帐时间：<b>Mark's EDIT Souple B6</b>（B6 · 3400日元 · Mark's）/ 旅行用：Aitika 的硕士笔记 Premium C.D，Notebook</p>
+    </div></div>
+  </div>
+
+  <span class="tag">梦想实现 · 目标达成 · 技能提升</span>
+  <h2>我们用手帐做到了！</h2>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>把心动瞬间毫无保留地记录下来，产生无穷灵感的心动瞬间储存手帐</h3>
+      <p class="who">整理收纳顾问 · 家居网站 Ourhome 创办人 · 埃米 女士（36岁）｜ https://ourhome305.com/</p>
+      <p>工作和私人生活不做区分，目的也不需要填写，总之先把心动瞬间毫无保留地记录下来。不做类别区分、按照日期顺序不断记录；写下的数字用六色笔下写在（贴纸等装饰）；不同材质之间用横线隔开方便回顾。15年前就开始写手帐，至今一共写了59本！过去的书帐全部都保存着，按照顺序标上号码摆在客里的书架上。</p>
+      <p class="goods">手帐秘诀·如何有效利用所写的笔记：<b>①</b> 确定主题后回顾（如打算寻找关于「整理」的素材）｜<b>②</b> 回顾特定的月份（如现在是5月就回顾以前5月的笔记）｜<b>③</b> 烦乱的时候回顾（通过过去发现自己的成长，就会产生前进的力量）</p>
+      <p class="goods">防止灵感白白流失：手头没有本子的时候，在手机上编辑一条信息发送给自己。「不过我现在极少这么做了。」</p>
+      <p class="goods">爱用的手帐好物：<b>国誉 Campus Note</b>（A5）＋百乐 Vcorn 直液式走珠笔（在日本油墨的黑色浓淡，回顾笔记的时候，文字就能够一下子映入眼帘）</p>
+      <p class="goods">结果：从公司辞职、创业，5年内出版了10部著作。</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>每天早上写10分钟养成习惯，落实目标与梦想的行动手帐</h3>
+      <p class="who">护士·美容学校讲师·治疗师 · 坂野嘉美 女士（34岁）——三份工作都被计划顺利展开，世界变得开阔了</p>
+      <p>改变的契机是在书店里偶然拿起了《一个笔记本搞定你的拖延症》（大和书房）这本书。每天早晨回顾前一天的手帐内容，然后将今天用10秒就可以做到的事写在笔记本中。要诚实地面对自己的欲望，写出真正令自己兴奋的事才能提升动力进入高效工作模式。例如为实现「想出差」就写下「给异地的顾客寄治疗费用表」等简单的行动并付诸实践。</p>
+      <p class="goods">内页分成4个部分·早晨用10分钟来记录：<b>STEP①</b> 写出三件昨天发生的高兴事 ｜<b>STEP②</b> 针对高兴的原因写出「我是怎么想的」｜<b>STEP③</b> 写出「自己真正想要做的事」（不要太具体作，就是决定「想有做的全是要的日子」（笑））｜<b>STEP④</b> 写下为了实现愿望马上就可以做的事（完成了就画一条红线，这样成就感满满）</p>
+      <p class="goods">爱用的手帐好物：<b>10秒笔记（非卖品）</b>＋Uni Ball RE百乐三色中性笔与百乐 Frixion Ball 三模块。书的文具都以粉色统一。</p>
+      <p class="goods">结果：一年前还在丈夫扶持下工作，现在已很活跃，周围人评价她「像换了个人一样」。</p>
+    </div></div>
+    <div class="case"><div class="num">3</div><div>
+      <h3>同步管理各项工作的一页可视化手帐——多项业务同时进行也不慌不忙</h3>
+      <p class="who">Takara Tomy 玩具公司市场部 开发料·股长 · 丹美和子 女士（35岁）</p>
+      <p>同时要运营15种以上的商品。每个月用 Excel 制作一张按商品分类的任务清单，打印出来贴在本子上，然后一边看着这张表一边开展每天的工作。已完成的任务用红笔标记；追加的任务用红笔记下来，预先还要给这类可能出现的任务留出空间；以月为单位根据商品类别把任务列成清单。除了贴有每月任务清单外，本子也用来写会议记录和灵感意象。每周商品和未来四个月内的工作安排也用 Excel 整理好贴在本子上。</p>
+      <p class="goods">结果：今年春天将心心念念的面向成年女性的玩具品牌推向了市场。「能够通过手帐把握所有工作的进度，我可以沉着地逐一处理每件事。」</p>
+      <p class="goods">爱用的手帐好物：<b>Life Clipper 系列画本</b>（A4，想把打印的东西可以贴转过去，野生是方形内页，可以无惧方格框架自由书写）＋Jetstream 的多功能笔（三色圆珠笔+自动铅笔）</p>
+    </div></div>
+    <div class="case"><div class="num">4</div><div>
+      <h3>学习技术窍门毫无遗漏——不做过滤取舍的完整记录手帐</h3>
+      <p class="who">冈崎市商工支援中心 Okka-Biz 副主任·爱知县立大学外聘讲师 · 高岛舞 女士（36岁）</p>
+      <p>通常记笔记时会先提炼出重点再记录，但高岛女士没有动用「过滤机制」，而是提醒自己要一字一句地照原样写下来。「这样做看起来效率不高，但是回顾的时候我就能客观地重现对话，重新捕捉真正重要的点。」秘诀在于「不要追求写得工工整整，多使用只有自己才懂的缩写」。</p>
+      <p class="goods">借助完整记录手帐使自己飞速成长的三步：<b>①</b> 将对方的发言不做取舍地全部记录下来 ｜<b>②</b> 当场查出疑问点，用彩笔修改补充（记录内容还记在空白处用彩笔补写）｜<b>③</b> 疑问点全部解决之后录入电脑（通过笔记录入电脑，一边记录一边思考，将学到的内容扎扎实实地变成自己的东西）</p>
+      <p class="goods">爱用的手帐好物：<b>Muji 树木原浆纸不易透页双线圈笔记本</b>（A5，正面很硬拿在上做笔记很稳，这一点很喜欢的）；Jetstream 三色圆珠笔 0.38mm 极细</p>
+    </div></div>
+  </div>
+
+  <span class="tag">方法论 · 行为专家推荐</span>
+  <h2>试试永谷式「每日成就手帐」吧</h2>
+  <p class="lead">分析过 12000 人的行为之后，行为专家推荐这种手帐写法——因为犯错而闷闷不乐、和别人一对比就感到消沉……这样的你需要永谷式「每日成就手帐」来改变自己。每天写下当天小小的成功体验，逐渐令自己拥有自信，变得积极向前。</p>
+  <div class="method">
+    <h3>「每日成就手帐」是什么？——请救一下这位：永谷研一 先生（发照家、行为专家、NETMAN 董事长）</h3>
+    <p style="font-size:.94rem;color:#5f4d4d">以行为学与认知心理学为基础，永谷研一对超过12000人的行动数据进行了验证分析，开发出了有助于目标的达成、使行动习惯化的<span class="hl">「PDCFA 循环」</span>（即计划 Plan、执行 Do、检查 Check、反馈 Feedback 与行动 Action——编者注），还开发了协助行动习惯化的 IT 系统，在日本和美国都享有专利权。他发现：「能够积极向前、持续成长的人，每天都会接受小小的挑战，深化自信，并从中发现自己真正渴望的东西。」</p>
+  </div>
+  <div class="steps" style="margin-top:22px">
+    <div class="step"><div class="n">1</div><b>写下每天「已完成的事」</b><small>睡前3分钟，每天写3件「当日成就」</small></div>
+    <div class="step"><div class="n">2</div><b>没能做到的事不要写</b><small>只记做到的、不记没做到的</small></div>
+    <div class="step"><div class="n">3</div><b>每周一次，回顾写下的内容</b><small>每次10分钟，选出「本周最佳」并深入分析</small></div>
+    <div class="step"><div class="n">＋</div><b>坚持写3周</b><small>3周之后再定3个月目标，达成率提升约2.5倍</small></div>
+  </div>
+  <div class="tips">
+    <div class="tip"><b>STEP 1 · 每天写3件「当日成就」的巧妙方法</b><p><b>以 HAPPY 为标准</b>：心情很好的事——收拾干净后感到神清气爽；发生了幸运的事（得到了充分的休息、用英语对话时比平时表达流畅、出行前的一周完成了准备工作等）<br><b>以 NUMBER 为标准</b>：令自己有成就感的数字——比计划提前30分钟起床、英语学习坚持了3天、合约有10次之多、两个月瘦了1.5kg等<br><b>以 PERSON 为标准</b>：帮助了他人获得的反应——电话上别人让人很高兴、把书借出去之后对方发来感谢留言、介绍了工作以后双方都很高兴等</p></div>
+    <div class="tip"><b>STEP 2 · 每个星期天回顾本周成就（每周10分钟）</b><p><b>①</b> 从6天的「当日成就」记录中选出一件「本周最佳」（凭直觉选出本周你最在意的一项）<br><b>②</b> 对「本周最佳」尽可能详细地进行说明（在什么时候、什么地方、怎样的状况下、和谁〈或者谁〉、做了什么、怎么完成的）<br><b>③</b> 关于「本周最佳」深入思考两个问题（首先思考「为什么这么做」，进而问自己「这么做的原因在于什么」）<br><b>④</b> 写下真实的情绪，了解自己真正的愿望（从7个关键词「开心/放心/得意/担心/惊讶/悲伤/生气」中选择，哪怕选2个以上也没关系）<br><b>⑤</b> 具体写出为了实现真正的愿望而开始的行动（写出明天就能做到的简单行动是什么）</p></div>
+    <div class="tip"><b>回顾「本日成就」的心理学机制</b><p>回顾自己这一行为本来就会产生不安。如果回顾的内容是「已完成的事」，就会产生对自己的肯定情绪，不安也会在适度的范围内平息下来，人会做好面对下一个挑战的心理准备。如果回顾的是「没能做到的事」，不安就会进一步增强，会引起的逃避心理。<br><b>从「已完成的事」开始回顾：</b>承认（做到了！）→ 适度的不安（这种做法不是最好的……）→ 先埋头做这件事吧 → 挑战 ✅<br><b>从「没能做到的事」开始回顾：</b>否定（糟了……没能做到）→ 强烈的不安（糟糕怎么办……）→ 逃避（我还是做不到啊……放弃吧）❌</p></div>
+    <div class="tip"><b>通过周计划手本和永谷先生的书让记录变得容易</b><p>使用左侧周计划页、右侧空白页页的周计划手帐，可以让记录变得更加容易。永谷式手帐版式可以免费下载。相关出版物：《をけにこ手帐——每日成就手帐》（跨媒体出版集团，1480日元）｜ http://dekitatokoto.jp/dl</p></div>
+  </div>
+</section>
+
+<!-- ═══════════ CHAPTER 3 ═══════════ -->
+<section id="ch3">
+  <div class="banner b3">
+    <span class="en">CHAPTER 3 · FOR RECORDS</span>
+    <h2>每日记录篇</h2>
+    <p>日子过得浑浑噩噩？如果试着去记录，你就会发现看似面目模糊的每一天里，都隐藏着成长的线索。把琐碎小事也写在手帐里，每日的充实感就会得到提升！</p>
+  </div>
+  <span class="tag">「只要动笔记录就能感到充实」的秘诀</span>
+  <h2>通过手帐，增加了幸福感，实现了自我成长</h2>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>养成用手帐回顾每一天的习惯，真切感受每日的小小进步</h3>
+      <p class="who">将一天分成三部分来记录 ｜ 会计师事务所·文员 · 托娜 女士（39岁）</p>
+      <p>不擅长使用竖版周计划手帐上的时间轴，于是改成了写日记。「我将一天分成三部分，早晨和晚上以私人生活为基础，白天则以工作上发生的事情为基础，加上短暂的想法，逐条来写。」本周的任务栏每周一定会做的事先写在便利贴上就成了「移动式清单」；书写的空格很狭小因此各种各用◎圈起来如 check 或用 emoji 表示；早饭、午饭和晚饭的记录；也可以把买的美丽照片贴上去，一目了然；星期六的空间用来写「孝敬父母备忘录」；防止购物失败的「穿搭日志」。</p>
+      <p class="goods">什么时候写手帐？<b>每天睡觉之前</b>——「因为主要把手帐作为日记来使用，所以在睡眠之前的时间来记录，以便回忆当天和回顾这一天。」</p>
+      <p class="goods">我爱用这本手帐：<b>国誉 自我手帐（随着版调节）</b>（A5 slim · 3800日元 · 国誉）</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>借助手帐与自己预约时间，去完成想做的事</h3>
+      <p class="who">检查公私事务是否平衡 ｜ IT·销售 · 奈加美 女士（26岁）@ig_nakami</p>
+      <p>有一天看着自己的手帐，光是工作计划就填写得满满当当，她感到很害怕。「我想要增加用于自我投资的时间，于是将想做的事当作与自己的约会，安排出时间，写在日程表里。」假如要学习就填入课程计划，假如想去的地方就和朋友约好时间一起去。「去完成想做的事不能依赖意志，而要当作与几个月之后的自己预约时间，时间到了就去做。」</p>
+      <p class="goods">她的记录技巧：将「想做的事」变成「约定的事」列进日程表（红笔写亲戚和别人的约会，工作计划用蓝笔写，事后记录用绿笔写）；用不同颜色的马克笔来检查公私事务是否平衡（普通工作用黄色标记，自我投资用粉色标记，放松用绿色——如果页面太多黄色与粉色，就代表自己可能太疲惫了）；为了便于回顾即使计划改变了记录也要保留下来（没完成的 To Do 划掉但不完全消除，回头就会重新考虑）。</p>
+      <p class="goods">手帐封套：「这个A5规格的手帐封套是我在网络花了1980日元买的，真皮的，所以有种高级感。」｜ 我爱用：<b>Action Planner</b>（A5 · 3700日元 · ewoman）｜ 写手帐时间：星期一与星期三的午餐时间</p>
+    </div></div>
+  </div>
+
+  <span class="tag">从记账本到投资计划和未来设计</span>
+  <h2>汇总所有金钱事务的收支笔记大公开！</h2>
+  <p class="lead">收支笔记不只是家庭记账本！擅长储蓄和筹划的女性们，用一本笔记管理着投资情报、收入变化、为实现目标准备的资金等。活页本做了充分利用。</p>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>原创记账模板，让家庭支出可视化——管理收支防止超支</h3>
+      <p class="who">建设类公司·文员 · 哈咕 女士（34岁）@hagumemo</p>
+      <p>三年前购买了住宅后开始记录家庭收支情况。「我的目标是拿出家庭年收入的30%用于储蓄，但是当时只能拿出15%。」她的记账本是将自创的记账模板打印在空白活页纸上再放进活页夹中。<b>STEP1</b> 每天花出去的钱都记到手帐里（用国誉自我手帐 biz 款每日时间轴，不同颜色区分不同类型支出，橙色是信用卡支出）；<b>STEP2</b> 星期天对各个开支项目逐一合计汇总至活页本中（纵向的一列表示一个星期，下方区域记录刷卡、网上支付等形式花掉多少钱）；<b>STEP3</b> 月末汇总整月开支情况及时反省（月初填固定费用无金额变动的项目，变动费用在月末合计后补上，每月都有变化的特别支出用支出项目名称手写）。</p>
+      <p class="goods">一边学习一边勇敢地在价格看涨时买入！每日股票价格指数与汇率记录表（将日经平均股价、东证股价指数、纳斯达股市股价指数等做成一览表）；关注的几只股票对比表（详细地记下利润和股息等待制度等内容）。</p>
+      <p class="goods">投资储蓄总额 900万日元（夫妇合计）｜ 实际到手年收入 300万日元｜ 每月储蓄额 5万日元（夫妇合计11万日元）</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>用「预设菜单」来管理伙食费——依靠「预设菜单」再也不浪费伙食费了</h3>
+      <p class="who">家庭储蓄笔记摸索中 ｜ 网络公司·网页设计 · 舞 女士（25岁）@mai_moneymemo</p>
+      <p>一年前离开了父母家开始和妹妹一起生活，并借助家庭储蓄笔记来学习对家庭支出进行筹划和安排。<b>STEP1</b> 每周六考虑下一周的菜单将准备做的料理列成清单；<b>STEP2</b> 在备忘录里写下下周必需的食材集中采购（下方的空间不够写时超出的部分可以写到上面来）；<b>STEP3</b> 每一次购物都记录明细（用不同颜色的马克笔对买回来的食材分类）；<b>STEP4</b> 将食物分为食材、调味料、点心、其他四类分别计算总金额（发现点心比想象中更昂贵，购物渐渐变得有所节制）。</p>
+      <p class="goods">明确将来的目标与必需的金钱：将未来的人生大事所需的费用列成清单（结婚费用、搬家开销、到育孩子的补助金等）；比较了公司正式员工与非正式员工生育手算补贴金的差别；将一年里的「想做之事」和「想要之物」列成清单（实际购买时尽量用比预算更便宜的价格买下来，已经实现了的目标也用线划掉同时写下花了多少钱）。</p>
+      <p class="goods">储蓄投资总额 100万日元 ｜ 年收入到手实额 360万日元 ｜ 每月储蓄额 2.5万~6万日元</p>
+    </div></div>
+  </div>
+
+  <span class="tag">在空闲时间里</span>
+  <h2>拜读学习达人的学习手帐！</h2>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>借助韩语学习手帐，通过了「韩国语能力鉴定考试」</h3>
+      <p class="who">提升学习动力 ｜ 医疗行业·文员 · 堀七帆 女士（25岁）</p>
+      <p>20岁时喜欢上了韩国流行音乐并开始自学韩语。会通过反复抄写来记住单词，也会抄写教材中的要点，一本笔记里留下了她全部的学习成果。用韩语填写日历（有学习计划的日子用韩语填写学习内容与时间，与朋友游玩的日子也用韩语记录下来）；自制 Study Planner（模仿在韩国人气很高的学习笔记 Study Planner所做的笔记，每个月的学习内容与花费的时间一目了然）；想要记住的单词用蓝笔反复抄写（「据说用蓝笔写的内容很容易留在记忆中，我还会提倡自己将单词和例句一起记」）；在不擅长内容旁边贴上喜欢的明星照片（「不想做呀……心里这么想的时候，索性贴上喜欢的明星的照片，鼓励自己去挑战不擅长的领域」（笑））；将疑问写在便利贴上传到Ins之后问题得以解决（有时候有人会注意到写便利贴上的疑问并留言回复，依靠Ins上的联系学习韩语的同伴也增加了）。</p>
+      <p class="goods">「每次回顾笔记看到自己如此努力，我的自信与动力就会上升。」过去5年里她去了12次韩国。学习笔记的问答：什么是学习笔记——「韩语学习过程的记录，可以使自己获得自信，也可以与同伴共享、提升学习动力，是学习的证明」｜什么时候写——「晚上会用2小时左右来学习并写笔记。不勉强自己，在没有要事的时候快乐地学习」｜什么时候回顾——「可以边学习边回顾，在汇总要点的内页贴上便利贴，做到随时都可以回顾」</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>让学过的知识留在记忆中！日本史学习笔记</h3>
+      <p class="who">提高记忆效率 ｜ 制造业·事务 · 黛有加里 女士（30岁）</p>
+      <p>2007年怀着大女儿时读了关于日本战國和幕末时代的书迷上了日本史。一边上班一边将日本通史整理成学习笔记。「虽然我是将历史作为兴趣来学习的，但因为投入了很多精力，所以我想参加『历史能力鉴定考试』。」为了将学过的东西留在记忆中，让回顾变成一种乐趣，她借助插画和箭头费尽心思打造了一本「最强日本史笔记」。将APP上的课程讲义整理到学习笔记中（课程讲义以文字为主体，为了更有感增加了图和插画）；源自参考书等处的追加内容写在便利贴上贴在笔记里（「把笔记做成彩色的，更容易记忆」）；有效利用插画和箭头增强记忆（重要的知识点使用象大粗的笔来写或者画成插画，回顾的时候重点能一下子映入眼帘并留在记忆中）。</p>
+      <p class="goods">现在用的笔记本：<b>国誉 Campus 5mm 方格笔记本</b>（已经写到第二本，正在学习到平安时代的内容）｜ 正在用的APP：<b>スタディサプリ</b>（Study Supplement上听高人气讲师伊藤贤一先生的讲座）｜ 正在看的参考书：<b>《详说日本史图录》</b>（山川出版社，书中的图片很漂亮光是看看不满足便誊下来就记忆更深了）</p>
+      <p class="goods">学习笔记的问答：讲义和参考书的要点全部整理在了笔记本里就成了世界上此一本的最强日本史笔记 ｜ 写的时间——「我定在早晨，从送家人出门后到自己上班之间的这段时间，从7点到8点30分」｜ 回顾时间——「学习的同时自不必说，有时候晚上我也会花15分钟左右回顾，考试之前更是要回顾的」</p>
+    </div></div>
+  </div>
+
+  <span class="tag">摆脱三天打鱼两天晒网的状态</span>
+  <h2>「写手帐坚持不下去」的问题，这样解决！</h2>
+  <p class="lead">尽管买了手帐，却没有充分利用，最后写手帐总是变成三天打鱼、两天晒网的状态。我们请教了两位专家：日本能率协会经营管理中心 NPB事业部企划部 No!ty企划部 <b>青木麻衣也 女士</b>（负责本公司手帐品牌 No!ty 的商品企划）和 Anchoring Innovation 董事长 <b>大平信孝 先生</b>（心理督导师，将最新脑科学与阿德勒心理学组合起来进行「行动创新」，为超过7800人实现目标提供了支持，著有《一个笔记本搞定你的拖延症》等）。</p>
+  <div class="method">
+    <h3>STEP 1 · 弄清手帐的作用和使用目的</h3>
+    <p style="font-size:.94rem;color:#5f4d4d">首先弄清楚自己想用手帐做什么。如果是用在工作上，建议定下「减少加班」「消灭失误」等具体目标。根据目标制订使用方法，延续记录的热情就会变得容易了。</p>
+    <div class="tips">
+      <div class="tip"><b>如果是用在工作上……</b><p>☑ 想要消灭失误 ｜ ☑ 想要在截止日期前完成工作 ｜ ☑ 想要高效工作 ｜ ☑ 想要更长更多线工程工作 ｜ ☑ 想要管理团队成员的工作进度</p></div>
+      <div class="tip"><b>如果是用在私人生活……</b><p>☑ 想要使假日过得充实 ｜ ☑ 想要擅长管理理财 ｜ ☑ 想要保持健康美丽 ｜ ☑ 想要在空闲时间提升技能 ｜ ☑ 想要留下快乐的记忆</p></div>
+    </div>
+    <h3 style="margin-top:24px">STEP 2 · 试着模仿手帐达人的一个技巧</h3>
+    <p style="font-size:.94rem;color:#5f4d4d">弄清自己使用手帐的目的后，参考本书里登场的女性的手帐，选择一个可以用于目标达成的技巧，并试着模仿吧。别计划的方法、页面空间的用法、颜色的区分使用等，什么都可以。要弄清这些问题：在什么位置写什么内容？使用什么类型的手帐？什么时候写？用什么印章、贴纸和什么样的笔？确定什么样的记录规则？</p>
+    <h3 style="margin-top:24px">STEP 3 · 一天一次，设定手帐时间，实践技巧</h3>
+    <p style="font-size:.94rem;color:#5f4d4d">每天打开手帐一次，实践STEP 2里选出的技巧。如果愿意，也可以每天打开手帐三次，选择早晨、午餐前、睡觉前等阶段性的时间点。一天拥有三段手帐时间，对手帐的依恋之情就会越深厚。</p>
+    <div class="tips">
+      <div class="tip"><b>HINT 1 · 预先把手册放在触手可及的地方</b><p><b>将手帐用于工作规划的人</b> → 放进包里随身携带（「越是没有时间从容写手帐的人，随身携带就越重要。请多将看手机的时间用来写手帐吧」（青木女士））<br><b>将手帐用于生活记录的人</b> → 将餐桌旁或床边设为放手帐的固定位置（如预先将手帐放在身旁或床旁等日常生活中久待的地方，就很容易养成随手打开本子就进入手帐时间的习惯）</p></div>
+      <div class="tip"><b>HINT 2 · 决定适合自己的时间段</b><p>想用手帐安排工作和管理时间的人，还是在早晨开始工作之前设定一段手帐时间比较好。「用来思考一天的安排，提升干劲！」青木女士说。为了对一天做记录，与自己的心灵对话而写手帐的人，则可以养成睡前写手帐的习惯。<br><b>想对一天进行安排、提升干劲</b> → <b>早</b>（推荐手帐时间）｜<b>想对一天进行回顾、静下心来、与自己面对面</b> → <b>晚</b>（推荐手帐时间）</p></div>
+    </div>
+  </div>
+  <div class="method">
+    <h3>尽管如此还是坚持不下去怎么办？</h3>
+    <p><b>HINT 1 · 试着改变写手帐的方法、场所以及质量</b>——精简书写规则，或者去咖啡馆写……一边尝试一边找出适合自己的写法吧。「放弃每天都写、写得不好看就不满意等对完美的追求，也是能够坚持写手帐的秘诀。」大平先生说。<br>自问三个问题：×规则是不是太多了？｜×是不是有太多想写的东西？｜×现在这本手帐的版面是不是很难安排？</p>
+    <p style="margin-top:14px"><b>HINT 2 · 准备好喜欢的手帐文具，提升干劲！</b>——喜欢的笔、贴纸和和纸胶带等能令你快乐写手帐的文具，试着去买一些吧！把它们与手帐一同携带，想写手帐的情绪就会高涨。</p>
+    <p style="margin-top:14px"><b>HINT 3 · 如果有满意的手帐内页，就发到社交平台与朋友分享！</b>——将自己满意的手帐内页上传到Ins等社交平台上与朋友分享吧。「得到了周围人的关注和反馈，你就会受到鼓励，很容易写下去了。」大平先生说。</p>
+  </div>
+
+  <span class="tag">使工作和生活熠熠生辉</span>
+  <h2>高人气文具公司职员私心推荐的手帐文具</h2>
+  <p class="lead">「借助这本笔记，工作和生活都会很充实！」高人气文具公司的职员们要为大家展示各自公司最推荐的笔记本与使用方法！</p>
+  <div class="brands">
+    <div class="brand">
+      <span class="bname">Brand 1 · 国誉 KOKUYO</span>
+      <p class="rec">我的推荐：国誉（Kokuyo）文具事业部·市场总部 C市场供应部 销售战略组·组长 <b>本村香代子 女士（36岁）</b></p>
+      <b>携带轻松的测量野帐，每天都能安排得很充实</b>
+      <p>内页是5mm方格，只有70g左右，除了常规款封面外「测量野帐」还有式样各异限定款封面（遇到没见过的设计时会开心！）。上班前在咖啡馆将这一天的时间安排表和 To Do 事项仿照子弹笔记 BUJO 的写法分条列出；假日通过「想做之事」与「一行日记」充实起来；在 Greeting Life 的月计划贴纸「Custom Diary Stickers」上列写假日想做的事。</p>
+      <p class="price">最为推荐的笔记本：测量野帐·素描本 200日元 ｜ 出品方 kokuyo-st.co.jp<br>+ITEM：Bizrack uo「包包中包」（6mm厚小尺寸便携）／国誉 0.38mm笔芯 Frixion Ball Slim Biz 中性笔</p>
+    </div>
+    <div class="brand">
+      <span class="bname">Brand 2 · Touch & Flow</span>
+      <p class="rec">我的推荐：Touch & Flow 东京日本桥高岛屋 S.C. 商场店 店长 <b>千叶幸荣 女士（37岁）</b></p>
+      <b>通过 Doodle 彩色内页本提升动力与联想力！</b>
+      <p>笔记本有六种鲜艳颜色的内页纸，根据内页纸的色彩与笔迹颜色的搭配，叶幸荣每天的心情、轮廓使用也会意外升队。黄色内页能够提升动力——「一边展开想象一边下面下，用与黄色内页相协调的蓝色墨水流畅地画出商品图与店内布置图，这样的过程是很快活的。本子有200页之多，我可以尽情地画画。」还有一本将月计划与笔记页结合的本子也是 Touch & Flow 的，配了纤维亚麻材质的三折封套便于随身携带。</p>
+      <p class="price">最为推荐的笔记本：Touch & Flow Doodle（B6）600日元 ｜ 出品方 touch-and-flow.jp<br>+ITEM：钢笔用量里为与黄色纸张契合度很高的蓝色墨水（购自百乐 Kakuno 笑脸钢笔）／Vintage Envelope「Vintage Buvard」吸墨纸也可以当作书签使用</p>
+    </div>
+    <div class="brand">
+      <span class="bname">Brand 3 · 普乐士 PLUS</span>
+      <p class="rec">我的推荐：普乐士（Plus）文具公司 第二产品事业部·剪刀·生活用品部 培育生活用品组 <b>池田茉莉 女士（30岁）</b></p>
+      <b>方便信息整理和阅读的「1/3张A4纸」规格手帐本</b>
+      <p>厚5mm不厚重，可以「啪地」一下打开写起来方便；180度可平摊的设计方便在对开页上一边翻阅笔记一边轻松地整理思维；封面有12种颜色可选非常丰富；淡绿色的方格底纹适用于会议记录、图表、灵感记录等都很适合，拿去复印也不会透出色来。将A4纸折成三折就能轻松收纳——从专门网站下载A4大小的模板打印在A4纸上折成三折收纳在本子里，模板是日程表、To Do 清单等对工作有用的。</p>
+      <p class="price">最为推荐的笔记本：普乐士 Ca.Crea 380日元 ｜ 出品方 bungu.plus.co.jp<br>+ITEM：专用的塑料封护袋（手机和笔也可同时收纳）／Orante 美工刀与 Normo Pro 点点胶（切割和粘贴素材时用到）／Zebra 数数配百乐 Frixion 中性笔</p>
+    </div>
+    <div class="brand">
+      <span class="bname">Brand 4 · 喜利 LIHIT LAB</span>
+      <p class="rec">我的推荐：喜利（Lihit Lab）销售计划部 <b>金亲美波 女士（25岁）</b></p>
+      <b>用两个同款活页本分别管理工作与生活</b>
+      <p>活页夹能够简单打开和关闭方便更换替芯——像图中那样捏住活页纸分别朝上下方向轻轻拉扯，活页夹就这么简单地打开了。关闭的时候只要捏住活页线圆圈就可以了。这款活页本内页铺满8mm方格，无论横向还是纵向使用都很容易。金亲美波女士在喜利公司负责商品的销售等，非常喜欢时装，午休时会一边浏览Ins一边将自己感兴趣的时尚穿搭画在工作手帐的右侧页上；回家后取出插画转移到使用同款本子的穿搭笔记中，对照自己现有的衣服和感兴趣的穿搭研究要买的衣服以防冲动购物。</p>
+      <p class="price">最为推荐的笔记本：喜利 Hirakuno 双线圈活页笔记本 480日元 ｜ 出品方 bungu.plus.co.jp<br>+ITEM：Bloomin 硅胶材质笔袋（拉链全打开就会变成放笔的托盘）／樱花 Craft Lab 002 中性笔 0.5mm规格、樱花 Sakura Cray-Pas 彩色橡皮、36色的施德楼 Steedtler 彩色铅笔</p>
+    </div>
+    <div class="brand">
+      <span class="bname">Brand 5 · Mark's</span>
+      <p class="rec">我的推荐：Mark's 创意中心 企划开发团队 <b>日置萌乃 女士（27岁）</b></p>
+      <b>用便利贴为信息排序，让创意轻松成形</b>
+      <p>封面上贴着立体贴纸，就算在公司里也能从众多同款本子当中一眼认出自己的。几年前被调到手帐封面设计团队经常需要把创意记录下来，这款创意笔记本就成了对她工作帮助极大的工具。横款设计很适合分析信息、组织构想和总览全局；淡蓝色的点阵相当于坐标；便于将设计方案和说明整理在一页纸上（将同一主题的内容整理在一页纸上，回顾的时候就一目了然了）；使用便利贴整理资料（将内页看作一块白板，更换便利贴的粘贴顺序整理资料的结构）。</p>
+      <p class="price">最为推荐的笔记本：EDIT 创意笔记本 1500日元 ｜ 出品方 edit-marks.jp<br>+ITEM：附带两种颜色和大小不同的便利贴可以记录创意和关键词／百乐 Juice up 果汁笔 0.3mm 用细笔尖顺利地画出设计图</p>
+    </div>
+    <div class="brand">
+      <span class="bname">Brand 6 · 国誉 KOKUYO</span>
+      <p class="rec">我的推荐：国誉 Workstyle 研究所 WorkSight Group 研究员·Workstyle 顾问 <b>樋口美由纪 女士</b></p>
+      <b>扩大思考范围——对开页相当于A3规格的 Campus 大开本笔记</b>
+      <p>身为 Workstyle 的研究员要被许多与工作方法有关的研究，也要在公司内外的研讨会上演讲。她尝试过各种各样的手帐类型结果最合适的是 Campus Note 的 A4 规格笔记本。「我用它来汇总信息、制作用于 PPT 的资料。这种对开页为A3规格的大开本笔记易于总览全局思考的范围好像也扩大了。」它还可以很轻松地与同样规格的文件夹一起整理到文件盒里。为了能够一眼看出本子里记了什么内容在封面上面画出容易联想到标题和内容的插画；在本脊上写明主题易于检索（把笔记放进国誉手机包 mo·baco 里随身携带）。</p>
+      <p class="price">最为推荐的笔记本：国誉 Campus Note（A4大小·点阵或方格内页）380日元 ｜ 出品方 kokuyo-st.co.jp<br>+ITEM：0.7mm笔芯的国誉 Type S 系列自动铅笔（笔压很强也不易折断）／国誉 Eraberno 中性笔</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CHAPTER 4 ═══════════ -->
+<section id="ch4">
+  <div class="banner b4">
+    <span class="en">CHAPTER 4 · FOR ITEMIZATION</span>
+    <h2>BUJO 子弹笔记篇</h2>
+    <p>子弹笔记（简称 BUJO）正受到全世界手帐爱好者的瞩目。只要掌握了基本写法，你就可以根据自己的喜好采用个性化的记录方式。子弹笔记可以作为备忘录，也可以成为未来规划，你也不妨用它来自由地记录想到的东西，使每天都过得更充实。</p>
+  </div>
+  <span class="tag">逐条勾·做记号·管理每天的任务</span>
+  <h2>借助子弹笔记，让每一天都过得更顺利！</h2>
+  <div class="method">
+    <h3>子弹笔记基本写法（首先要做的是……）</h3>
+    <ul>
+      <li><b>设定记录规则</b>——任务建立用「•」，任务完成用「×」等。任务决定采用哪些记号（Key）要尽量简单好记，种类太多容易产生混乱。<b>玛丽女士的 Key 是勾选框型的</b>：「我把Key设定成勾选框式，未完成的颜色、未完成的用同样的颜色这样完成状态一目了然。」</li>
+      <li><b>准备笔记本</b>——笔记本的设计和规格可以自由选择。不过选尺寸太小不好书写，太大则很难随身携带。推荐横线或者点阵的笔记本。<b>灯塔 Leuchtturm1917 Note Pocket 口袋型笔记本 A6 点阵款</b>（页面下方撕有页码，也有折页页、没附附了披带书签带很方便，这是玛丽女士现在很爱用的笔记本她喜欢点阵款内页）</li>
+      <li><b>为笔记本标注页码</b>——从第一页开始按顺序标注页码方便之后制作索引在哪页写了什么立刻就能找出来。推荐使用已经有页码的笔记本（如灯塔本）</li>
+      <li><b>制作索引</b>——如果使用的是没有索引页的普通笔记本就要预留前面的三四页来做索引。例如从索引可以查出「从第32页开始是4月的内容」将页码与内容联系起来回顾时更方便。</li>
+    </ul>
+  </div>
+  <div class="method">
+    <h3>消除不安感，让子弹笔记成为力量的源泉——玛丽女士（人气博主 @Mandarinmote）</h3>
+    <p style="font-size:.94rem;color:#5f4d4d">「过去我经常不小心忘记记事自己为此感到不安。把任务写在子弹笔记中以后即使我忘记了看一下笔记也就想起来了，这让我有和安心感。」虽然现在网络上都是如艺术品一般的「进阶版子弹笔记」，对初学的空绪来说难免自卑，但是做子弹笔记本来应该是非常简单的。健忘的人、三天打鱼两天晒网的人、以及因容易忘事而感到不安的人，我都希望他们都试一试。</p>
+    <div class="tips">
+      <div class="tip"><b>STEP 1 · 用「未来计划 Future Log」制订未来六个月的计划</b><p>索引之后就写「未来计划」。为了方便浏览可以在一个对开页上。未来六个月也好一整年也好每一个活动和比较重要的事情一旦时间确定便立刻填写进来。将开页分成六个区域，一个分区记一个月的内容每个分区还写明月份；写旅行或者考试日期等事先决定好的日程以及生日等不可以忘记的日期；不必在日期的顺序！只要计划一定下来就补写在后面。</p></div>
+      <div class="tip"><b>STEP 2 · 每月一号填写本月的「月度计划 Monthly Log」</b><p>月初就填写「月度计划」管理本月任务。从「未来计划」中誊写出本月已经确定好时间的计划补充分新增计划。「我不建议大家写下这个月的目标与 To Do 事项，方便浏览任务合理地进行安排。」常规月计划手帐的方法来写如果有新增计划就补充在后面。可以充分利用日历贴纸（市面上可以买到各种日历贴纸贴在本子上转眼就成了月计划页快速又合理地填写是长期坚持使用子弹笔记的秘诀）。</p></div>
+      <div class="tip"><b>STEP 3 · 任务、记录、灵感等在「每日记录 Daily Log」里写下每天发生的事</b><p>子弹笔记最大的特色是「每日记录」它不像普通的手帐那样每天记录的篇幅固定不变的因此可以只填写与当天的计划、想法、购物清单等。在家里经常将手帐放在身边随时都可以写，外出时有时会先记在便利贴或手机上再转抄到笔记上。<br>写每日记录的顺序：<b>①</b> 早晨或者前一天晚上填写好日期和星期几 ｜<b>②</b> 写当天的任务句首用「•」标记 ｜<b>③</b> 前一天未完成的任务重写今日日程 ｜<b>④</b> 下月计划里已确定的本日日程 ｜<b>⑤</b> 写下这一天里想到的事情等在句首附上Key ｜<b>⑥</b> 任务结束之后写上表示结束的Key<br><b>未完成任务的处理方法：</b>当天晚上或第二天早晨重新审视任务并填写Key（完成了的任务在「•」上誊写一个「×」→当天未做留给第二天完成的任务写下「任务推迟」的Key「＞」→如果留到第二天去做就在第二天的日程栏里誊写一遍任务。写到便利贴上贴在本子里比写到便利贴贴到本子里）</p></div>
+      <div class="tip"><b>麻烦的任务分解成小项目，写进 To Do 事项里做起来就更容易了</b><p>预先写下完成每项任务所需要的时间便于制订计划；购物清单写在便利贴上外出时贴在钱包上防止遗漏。</p></div>
+    </div>
+  </div>
+  <div class="method">
+    <h3>遇到这些问题怎么办？ Q&A</h3>
+    <div class="qa"><p class="q">Q 手帐「空窗」怎么办？</p><p class="a">A 就从「买牙膏」之类的购物清单开始记录！没有想写的事手帐就会出现记录的空白页也实属无妨可以试着从「买牙膏」之类的购物清单开始记录体验那种「已经写在本子里即使忘了也不用在意」的轻松感自然就会坚持下去了。</p></div>
+    <div class="qa"><p class="q">Q 工作笔记和生活笔记区分开来比较好吗？</p><p class="a">A 集中在一本里正是它的妙趣所在。因为工作的关系我的工作和生活笔记是分开的但对于没有什么特别限制的人也可以用一个本子实现工作和生活一体化管理只要区分一下Key的形状和颜色就可以了。</p></div>
+    <div class="qa"><p class="q">Q 本子后面的索引页不够写怎么办？</p><p class="a">A 在写笔记的过程中添加新的索引。如果索引页不够可以在写笔记的过程中制作新的索引只要在前面的索引的最后写上「P125索引続き」之类的提示语就可以了。因为标注了页码所以写的时候就可以不用在意顺序了。</p></div>
+    <div class="qa"><p class="q">Q 挑选什么样的笔记本好呢？</p><p class="a">A 根据需求选择最合适的尺寸。要是经常随身携带就选小尺寸的本子；要想让内页丰富充满变化选大尺寸A6。根据自己需求来选择即可。想要随身携带笔记本所以选择了小巧便携的A6规格。</p></div>
+    <div class="qa"><p class="q">Q 想在人事面谈时想说的事情列成清单？</p><p class="a">在上一份工作中公司强制要求我在午休时间不得休息于是给加班费因此我养成了记录平时的习惯。「加班费在做合同规定之外的工作时也可以做个记录。」</p></div>
+  </div>
+  <div class="method">
+    <h3>通过清单，打造具有自我风格的手帐！——更多用法</h3>
+    <div class="tips">
+      <div class="tip"><b>习惯追踪打卡</b><p>背单词、锻炼腹肌……对你想要坚持每天做的事情进行记录这就是习惯追踪打卡。画一个日历表做了的格子打上×如果是每日读书打卡就写上当日的读书的页数表格填得越满成就感就越强！</p></div>
+      <div class="tip"><b>每月存款金额清单</b><p>用专门的内页来记录存款金额储蓄的动力就会提高！「我每个月更新一次存款金额清单虽然我没有写家庭支出笔记但是从这张清单里就能看到一年的水电煤气费。」</p></div>
+      <div class="tip"><b>快乐之事清单</b><p>将能令自己快乐的事列成清单。「当你感到消沉或是看到社交平台上有人光鲜的生活内心五味杂陈时看看这张清单吧。与其羡慕自己没有的东西不如好好审视已经得到的幸福这这是我快乐的秘诀。」</p></div>
+      <div class="tip"><b>读书清单 / 旅行记录 / 食谱汇总</b><p>读过的书、看过的电影、旅行记录、食谱汇总……每天将任务昨日以外的东西汇总记录就形成了清单。「100个心愿」「旅行的回忆」等等能够将清单本不清增加喜欢的项目这正是子弹笔记的妙趣所在！在索引里写上下清单的页码和内容例如「P124长途旅行」。</p></div>
+    </div>
+  </div>
+
+  <span class="tag">掌握了分条记录的基础写法之后</span>
+  <h2>职场女性的进阶版子弹笔记</h2>
+  <p class="lead">其实子弹笔记的基本写法是一样的，排版却可以千差万别，手帐主人不同的个性与创意在其中熠熠生辉。</p>
+  <div class="cases">
+    <div class="case"><div class="num">1</div><div>
+      <h3>写下每天完成的事，每一个普通的日子都充满了成就感</h3>
+      <p class="who">事务 · 米坦 女士 @bulletjournal_mitan</p>
+      <p>「2018年，我想要开启崭新的人生。」从2017年末开始使用子弹笔记的米坦女士说。「我不仅用子弹笔记做任务管理还会将当天完成的事和感受用积极的语句写下来这让我每天都充满了成就感。」</p>
+      <p>一个对开页是一个星期的每日记录。随着季节更替每周的设计也不一样。写下每一天的任务、日记和积极的感受。完成了一个对开页后在回顾一周的同时把页面发布到Ins上来自粉丝们的评论成了对她的鼓励。</p>
+      <p>用六位数的形式写下日期。不管是什么内容都按照顺序记录，将来回顾时就有迹可循。</p>
+      <p>年初时满怀期待地写下「100个心愿」现在清单上的心愿正顺利地逐个实现，用彩笔给已经实现的心愿的勾选框涂色令我很快乐！</p>
+      <p class="goods">月度记录：用表情插画记下当天的心情——在左边的月历里画上代表当天心情的表情插画快乐的日子用微笑的脸消沉的日子用悲伤的脸等等。右页可以记录自己英语学习状况的习惯追踪。<br>从一个星期里做出的菜中选出喜欢的将菜谱整理在一起就成了这页菜谱手帐用和纸胶带将自己拍的照片贴在本子里做菜的感受也写在一边。</p>
+      <p class="goods">更多用法：GOAL & TO DO、GO LIST & WANT to do、MUST BUY、巴厘岛旅行计划（SCHEDULE）——为了改变人生新的一年来坦女士想挑战一个人旅行。为了使梦寐以求的巴厘岛旅行成为最棒的旅行从每日行程到携带物品她都做成了确认清单。</p>
+      <p class="goods">爱用的笔记本：<b>Moleskine 大型笔记本·白色方格款</b>——一个对开页是一星期因为想要尽量多地书写每天的内容所以米坦女士根据长21cm×宽13cm的大型笔记本。白色款的封面·松紧绑绳和书签绳一般都是白色的。</p>
+    </div></div>
+    <div class="case"><div class="num">2</div><div>
+      <h3>看似徒劳的「手绘清单时间」，正是能够面对自我的时间</h3>
+      <p class="who">公务员 · 志保 女士（25岁）@bujo.sh.et</p>
+      <p>「我养成了用子弹笔记回顾一天的习惯逐渐学会了珍惜时间。」在笔记中写下工作烦恼、个人目标和决心去做的事等有助于成长。</p>
+      <p><b>3月 STUDY RECORD：</b>0h~7h的时间轴用色块记录每天的学习时间（全标·大跨度·英语·资格证的配色图例）。月计划页与记录页——日常「备考3H2!!」→结果 7H 10M（X为明日てのできない、7/25・馬場間の DUO を聴くこと～1回2回等）。</p>
+      <p><b>Achievement 手帐：</b>除了写下想要完成的内容外右表格的上半部分写想要完成的日期下半部分写上实际完成的日期。写有家人投信的「今天我的奶奶收拾任务。」→・想要「我祝天天动动头脑」→・不会做Inpo・学着了つき→・/com里的七味发讲解闻3・→/20。她还将「已读书籍清单」设计成到了100本书样的书架一门心思绘制清单版式的时间看似徒劳无法其实是能够面对自我的重要时间。</p>
+      <p><b>理想的わたし（理想的自己）：</b>新年伊始分别写下在健身、美容化妆、时尚、学习等方面理想的自我形象。偶尔翻看提醒自己要不断努力靠近理想。Body类示例：「每天回喜欢情绪・让双眼炯炯有神」「肩膀不驼背！一字肩哟」「通过3回已经减肥让大腿变柔软」「小腿腘窝・2~cm」等。</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- ═══════════ 数据 ═══════════ -->
+<section id="data">
+  <span class="tag">数据说话</span>
+  <h2>职业女性正在借助手帐获得成长</h2>
+  <p class="lead">根据《日经WOMAN》杂志的读者调查：在工作上有效利用手帐的人占了 65.9%，在私人生活中有效利用的人也占了 44.6%，接近半数！工作手帐有很多用法，可以记录会议纪要或者指示、To Do 清单之类；生活手帐可以写日记、每天的回顾，也可以写下梦想与目标等。该调查由「日经WOMAN」官方网站于2018年3月开展，共计收集了495位女性（平均年龄39岁）的回答。</p>
+  <div class="data">
+    <div class="poll">
+      <h3>📌 手帐上写些什么？（私人生活篇·可多选）</h3>
+      <div class="bar"><span><i>第1位 日记，每天的回顾</i><i>36.7%</i></span><div class="track"><div class="fill" style="width:100%"></div></div></div>
+      <div class="bar"><span><i>第2位 琐事备忘录</i><i>36.7%</i></span><div class="track"><div class="fill" style="width:100%"></div></div></div>
+      <div class="bar"><span><i>第3位 自己的梦想与目标</i><i>35.3%</i></span><div class="track"><div class="fill" style="width:96%"></div></div></div>
+      <div class="bar"><span><i>第4位 想买的东西</i><i>35.0%</i></span><div class="track"><div class="fill" style="width:95%"></div></div></div>
+      <div class="bar"><span><i>第5位 想去的地方</i><i>34.8%</i></span><div class="track"><div class="fill" style="width:95%"></div></div></div>
+      <h3 style="margin-top:22px">✍️ 写下的梦想与目标实现了吗？</h3>
+      <div class="bar"><span><i>实现了</i><i>37.2%</i></span><div class="track"><div class="fill" style="width:100%"></div></div></div>
+      <div class="bar"><span><i>快要实现了</i><i>27.1%</i></span><div class="track"><div class="fill" style="width:73%"></div></div></div>
+      <div class="bar"><span><i>还没感觉到实现</i><i>35.7%</i></span><div class="track"><div class="fill" style="width:96%"></div></div></div>
+      <p style="font-size:.85rem;color:#b08d8d;margin-top:10px">——大约 65% 的人确实感受到了效果！</p>
+    </div>
+    <div class="poll p2">
+      <h3>💼 手帐上写些什么？（工作篇·可多选）</h3>
+      <div class="bar"><span><i>第1位 记录商讨内容</i><i>52.5%</i></span><div class="track"><div class="fill" style="width:100%"></div></div></div>
+      <div class="bar"><span><i>第2位 记录接到的指示</i><i>50.3%</i></span><div class="track"><div class="fill" style="width:96%"></div></div></div>
+      <div class="bar"><span><i>第3位 列 To Do 清单</i><i>42.6%</i></span><div class="track"><div class="fill" style="width:81%"></div></div></div>
+      <div class="bar"><span><i>第4位 做会议记录</i><i>37.7%</i></span><div class="track"><div class="fill" style="width:72%"></div></div></div>
+      <div class="bar"><span><i>第5位 收藏工作上用得到的信息</i><i>30.7%</i></span><div class="track"><div class="fill" style="width:58%"></div></div></div>
+      <h3 style="margin-top:22px">📈 通过记手帐，你发生了哪些改变？（可多选）</h3>
+      <div class="bar"><span><i>第1位 回顾工作变得容易了</i><i>40.5%</i></span><div class="track"><div class="fill" style="width:100%"></div></div></div>
+      <div class="bar"><span><i>第2位 对记不住事的焦虑减少了</i><i>30.7%</i></span><div class="track"><div class="fill" style="width:76%"></div></div></div>
+      <div class="bar"><span><i>第3位 能快速整理信息，烦恼时间减少</i><i>25.5%</i></span><div class="track"><div class="fill" style="width:63%"></div></div></div>
+      <div class="bar"><span><i>第4位 任务管理变得容易了</i><i>25.2%</i></span><div class="track"><div class="fill" style="width:62%"></div></div></div>
+      <div class="bar"><span><i>第5位 失误减少了</i><i>22.4%</i></span><div class="track"><div class="fill" style="width:55%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 推荐序 ═══════════ -->
+<section id="preface">
+  <span class="tag">推荐序</span>
+  <h2>手帐因梦想而生，也是做更多梦的理由</h2>
+  <div class="quote">
+    <p>2015年，我在巴黎埃菲尔铁塔前手绘的小小举动，没想到竟为我后来的工作和生活引发了N次方的幸福大爆炸！这些年因为手帐，我对世界上瘾，先后去了日本、法国、西班牙、美国、马来西亚、瑞士等国家。在用脚步丈量世界的过程中，我也写着一本本旅行手帐，目前已经完成9本。</p>
+    <p>因为总结了一些零基础零失败的手帐入门技巧，我被多次邀请到不同的场合做线上和线下的分享，包括全国各地的地方书店、公共图书馆、大型商场、手帐集市和手帐大会。我也成了手帐类图书的作者，将自己的手帐作品和故事集结出版。最惊喜的是，我还应邀在全球人流量最大的公共图书馆举办了手帐个展。很多人在看了、听了我的分享之后，开始写自己人生的第一本手帐。——<b>这些梦想成真的时刻，是手帐带给我的。</b></p>
+    <p>这本书也是如此。全书共分为4个部分，分别关于工作、梦想、日记和风格技法 BUJO（子弹笔记），选择了36位日本女性，放大展示每个人的一页手帐，切片般精准探析这些女性在各自成长经历中的一段时光。我翻开第一页，就仿佛推开了一扇手帐大门，透过每一位优秀女性闪闪发亮的经历，我也开始了自我探索，发现自己要什么，了解自己会因何而幸福。</p>
+    <p>在看这本书的过程中，我在想象有哪些人一定会很喜欢这本书：喜欢追逐目标的人，有目的地进行时间规划的人，拥有梦想的人，热爱生活的人，喜欢寻找生活意义的人，希望找到人生使命的人……还有那些对手帐如何帮助自己圆梦好奇的人，和我一样喜欢通过案例故事、分析别人成功圆梦的关键 tips 来获取心得的人，以及希望通过密布的待办事项和 To Do 清单来想象生活的人。</p>
+    <p>这是一本手帐爱好者们对过去的自己诉说的书。这里没有开头和结尾，只有一页一页事无巨细的手帐示例，记载着一段段热气腾腾的当下人生。这些优秀的女性也不仅仅是在本书中做手帐的主角，而是在放大的手帐示例的另一端，遥遥地转化为你的伙伴，陪伴在你左右。</p>
+    <p>手帐就是一套有效的体系，也是一套令人自在的方法。即便遭遇困境，她仍能通过每天写下「已完成的事」，看到「每天小小的成就」而自得其乐。容易看到自己的长处时，自我肯定感就会提高，也会注意到自己真正的愿望，从而会为了实现这个愿望自然而然地看到「应该做的事」。因此，这本充满实用信息、倾囊相授的《梦想成真手帐》应该更早出现！这样，我便可以更早一点展开自我探索，奔向梦想，努力抵达。手帐与梦想，就好像一对搭档，他们总是一起出发，带着彼此，去到光明又遥远的未来。</p>
+    <p>如果可以，请手帐帮我留下人生的足迹。如果可以，请手帐带着热气腾腾的日子，带着不知道目标能否实现时迷茫的自己，去让梦想成真。</p>
+    <p class="who">—— Kamy（手帐达人 · 大型企业资深HRD · PINBOOK品牌本联合创始人）</p>
+  </div>
+  <div class="quote" style="margin-top:20px">
+    <p>「做手帐究竟有什么用？」对于手帐爱好者，尤其是借助手帐在各行各业、柴米油盐、课业和考试中忙碌的女性来说，这从来不是个问题，因为手帐简直就是她进入客观世界、探索自我的方法。一来不由自己选择，更像是天选之路；二来，手帐确实已经成了她的个人技艺。</p>
+    <p>由于已经具备了这种方法、路径和技艺，所以不论遇上什么事，她都自有一套安身立命之道去应对，无须害怕。借着本帐，她能够做到所有她想做到的，比如掌握一门新语言，学习财务规划、营销推广或团队管理的方法，梳理家庭关系，通过公务员考试，设计手帐产品，兼顾多份工作，甚至开办网站或创业企业……</p>
+    <p class="who">—— 推荐序《手帐因梦想而生，也是做更多梦的理由》</p>
+  </div>
+</section>
+
+<footer>
+  <b>《梦想成真手帐》</b>完整版网页 · 《日经女性》杂志 编著 / 陈婧 译 · 插画 © Kei Okuda · 北京日报出版社<br>
+  原作 KAKU DAKEDE YUME GA KANAU TECHO & NOTE JUTSU © 2019 Nikkei Business Publications, Inc.<br>
+  本页面为书籍内容介绍 · 图文版权归原作者所有
+</footer>
+</body>
+</html>
